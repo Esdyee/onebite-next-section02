@@ -3,10 +3,12 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const getLayout = Component.getLayoutOneBite || ((page) => page);
   return (
     <>
       <GlobalLayout>
-        <Component {...pageProps} />
+        {getLayout(<Component {...pageProps} />)}
+        {/* <Component {...pageProps} /> */}
       </GlobalLayout>
     </>
   );
