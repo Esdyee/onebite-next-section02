@@ -8,6 +8,6 @@ export default function Page() {
   return <h1>Search {query.q}</h1>;
 }
 
-// Page.getLayoutOneBite = function getLayout(page: React.ReactNode) {
-//   return <SearchableLayout>{page}</SearchableLayout>;
-// }
+Page.getLayoutOneBite = function getLayout(page: React.ReactNode) {
+  return <SearchableLayout>{page}</SearchableLayout>;
+}
