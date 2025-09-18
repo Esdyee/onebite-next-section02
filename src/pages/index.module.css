@@ -1,7 +1,15 @@
-.h1 {
-    color: red;
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.h2 {
-    color: blue;
+.container h3 {
+  margin-bottom: 0px;
 }
+
+/* .container section {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+} */

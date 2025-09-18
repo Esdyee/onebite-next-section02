@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  padding: 20px 10px;
+  border-bottom: 1px solid rgb(220, 220, 220);
+
+  color: black;
+  text-decoration: none;
+}
+
+/* 이미지만 수평 가운데 정렬 */
+/* .container img {
+  align-self: center;
+} */
+
+.title {
+  font-weight: bold;
+}
+
+.subTitle {
+  word-break: keep-all;
+}
+
+.author {
+  color: grey;
+}
