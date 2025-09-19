@@ -8,24 +8,34 @@ import { InferGetServerSidePropsType } from "next";
 
 // getServerSideProps이라는 convention으로 정해진 문법
 // 이렇게 써야 SSR을 사용할 수 있음.
-export const getServerSideProps = async () => {
-  // 병렬로 실행
-  // const allBooks = await fetchBooks();
-  // const randomBooks = await fetchRandomBooks();
+// export const getServerSideProps = async () => {
+//   // 병렬로 실행
+//   // const allBooks = await fetchBooks();
+//   // const randomBooks = await fetchRandomBooks();
 
-  const [allBooks, randomBooks] = await Promise.all([fetchBooks(), fetchRandomBooks()]);
+//   const [allBooks, randomBooks] = await Promise.all([fetchBooks(""), fetchRandomBooks()]);
 
+//   return {
+//     props: {
+//       allBooks,
+//       randomBooks,
+//     },
+//   };
+// };
+
+export const getStaticProps = async () => {
+  console.log("인덱스 페이지");
+
+  const allBooks = await fetchBooks("");
+  const randomBooks = await fetchRandomBooks();
   return {
-    props: {
-      allBooks,
-      randomBooks,
-    },
+    props: { allBooks, randomBooks },
   };
 };
 
 // 이렇게 data props를 받아올 수 있음.
 export default function Home(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>
+  props: InferGetServerSidePropsType<typeof getStaticProps>
 ) {
   // const bookList = books;
   return (
