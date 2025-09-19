@@ -3,6 +3,7 @@ import { GetStaticPropsContext, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import styles from "./[id].module.css";
 import { useRouter } from "next/router";
+import MetaHead from "@/components/meta-head";
 
 // export const getServerSideProps = async (
 //   context: GetServerSidePropsContext
@@ -16,9 +17,7 @@ import { useRouter } from "next/router";
 //   };
 // };
 
-export const getStaticProps = async (
-  context: GetStaticPropsContext
-) => {
+export const getStaticProps = async (context: GetStaticPropsContext) => {
   const id = context.params!.id;
   const book = await fetchOneBook(Number(id));
 
@@ -54,7 +53,12 @@ export default function Page(
   const router = useRouter();
 
   if (router.isFallback) {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <MetaHead />
+        <div>Loading...</div>
+      </>
+    );
   }
 
   // book이 없는 경우는 이제 getStaticProps에서 처리되므로 여기서는 필요 없음
