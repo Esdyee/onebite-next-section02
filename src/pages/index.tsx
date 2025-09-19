@@ -30,6 +30,7 @@ export const getStaticProps = async () => {
   const randomBooks = await fetchRandomBooks();
   return {
     props: { allBooks, randomBooks },
+    revalidate: 3, // 3초마다 다시 렌더링
   };
 };
 
