@@ -5,32 +5,13 @@ import fetchRandomBooks from "@/lib/fetch-random-books";
 import styles from "@/pages/index.module.css";
 import { BookItemProps } from "@/types/book.type";
 import { InferGetServerSidePropsType } from "next";
-
-// getServerSideProps이라는 convention으로 정해진 문법
-// 이렇게 써야 SSR을 사용할 수 있음.
-// export const getServerSideProps = async () => {
-//   // 병렬로 실행
-//   // const allBooks = await fetchBooks();
-//   // const randomBooks = await fetchRandomBooks();
-
-//   const [allBooks, randomBooks] = await Promise.all([fetchBooks(""), fetchRandomBooks()]);
-
-//   return {
-//     props: {
-//       allBooks,
-//       randomBooks,
-//     },
-//   };
-// };
+import Head from "next/head";
 
 export const getStaticProps = async () => {
-  console.log("인덱스 페이지");
-
   const allBooks = await fetchBooks("");
   const randomBooks = await fetchRandomBooks();
   return {
     props: { allBooks, randomBooks },
-    revalidate: 3, // 3초마다 다시 렌더링
   };
 };
 
@@ -40,20 +21,29 @@ export default function Home(
 ) {
   // const bookList = books;
   return (
-    <div className={styles.container}>
-      <section>
-        <h3>지금 추천하는 도서</h3>
-        {props.randomBooks.map((book: BookItemProps) => (
-          <BookItem key={book.id} {...book} />
-        ))}
-      </section>
-      <section>
-        <h3>등록된 모든 도서</h3>
-        {props.allBooks.map((book: BookItemProps) => (
-          <BookItem key={book.id} {...book} />
-        ))}
-      </section>
-    </div>
+    <>
+      <Head>
+        <title>한입 북스</title>
+        <meta name="description" content="ONEBITE BOOK" />
+        <meta property="og:image" content="/thumbnail.png" />
+        <meta property="og:title" content="한입 북스" />
+        <meta property="og:description" content="한입 북스에 등록된 도서들을 만나보세요" />
+      </Head>
+      <div className={styles.container}>
+        <section>
+          <h3>지금 추천하는 도서</h3>
+          {props.randomBooks.map((book: BookItemProps) => (
+            <BookItem key={book.id} {...book} />
+          ))}
+        </section>
+        <section>
+          <h3>등록된 모든 도서</h3>
+          {props.allBooks.map((book: BookItemProps) => (
+            <BookItem key={book.id} {...book} />
+          ))}
+        </section>
+      </div>
+    </>
   );
 }
 

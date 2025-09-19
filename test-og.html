@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오픈그래프 로컬 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .preview-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .preview-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .preview-content {
+            padding: 15px;
+        }
+        .preview-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #1877f2;
+        }
+        .preview-description {
+            color: #606770;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .preview-url {
+            color: #8b9197;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+        }
+        .meta-info {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .meta-info pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+        button {
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #166fe5;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 오픈그래프 로컬 테스트 도구</h1>
+
+    <div class="meta-info">
+        <h3>현재 설정된 메타 태그:</h3>
+        <pre id="metaTags"></pre>
+    </div>
+
+    <button onclick="fetchLocalOG()">로컬 서버에서 OG 태그 가져오기</button>
+
+    <h2>Facebook 스타일 미리보기</h2>
+    <div class="preview-card">
+        <img id="ogImage" src="/thumbnail.png" alt="OG Image">
+        <div class="preview-content">
+            <div class="preview-title" id="ogTitle">한입 북스</div>
+            <div class="preview-description" id="ogDescription">한입 북스에 등록된 도서들을 만나보세요</div>
+            <div class="preview-url">localhost:4000</div>
+        </div>
+    </div>
+
+    <h2>Twitter 카드 스타일 미리보기</h2>
+    <div class="preview-card" style="display: flex; max-height: 120px;">
+        <img id="twitterImage" src="/thumbnail.png" style="width: 120px; height: 120px; object-fit: cover;">
+        <div class="preview-content" style="flex: 1;">
+            <div class="preview-title" id="twitterTitle">한입 북스</div>
+            <div class="preview-description" id="twitterDescription">한입 북스에 등록된 도서들을 만나보세요</div>
+            <div class="preview-url">localhost:4000</div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchLocalOG() {
+            try {
+                const response = await fetch('http://localhost:4000');
+                const html = await response.text();
+
+                // HTML 파싱
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // OG 태그 추출
+                const ogTitle = doc.querySelector('meta[property="og:title"]')?.content || '제목 없음';
+                const ogDescription = doc.querySelector('meta[property="og:description"]')?.content || '설명 없음';
+                const ogImage = doc.querySelector('meta[property="og:image"]')?.content || '';
+                const title = doc.querySelector('title')?.textContent || '제목 없음';
+                const description = doc.querySelector('meta[name="description"]')?.content || '설명 없음';
+
+                // 미리보기 업데이트
+                document.getElementById('ogTitle').textContent = ogTitle;
+                document.getElementById('ogDescription').textContent = ogDescription;
+                document.getElementById('twitterTitle').textContent = ogTitle || title;
+                document.getElementById('twitterDescription').textContent = ogDescription || description;
+
+                if (ogImage) {
+                    const imageUrl = ogImage.startsWith('http') ? ogImage : `http://localhost:4000${ogImage}`;
+                    document.getElementById('ogImage').src = imageUrl;
+                    document.getElementById('twitterImage').src = imageUrl;
+                }
+
+                // 메타 태그 정보 표시
+                const metaInfo = `
+Title: ${title}
+Description: ${description}
+OG:Title: ${ogTitle}
+OG:Description: ${ogDescription}
+OG:Image: ${ogImage}
+                `.trim();
+
+                document.getElementById('metaTags').textContent = metaInfo;
+
+                alert('OG 태그를 성공적으로 가져왔습니다!');
+            } catch (error) {
+                alert('로컬 서버에 연결할 수 없습니다. CORS 정책으로 인해 실패할 수 있습니다.\n' + error.message);
+            }
+        }
+
+        // 페이지 로드 시 자동으로 가져오기
+        window.onload = fetchLocalOG;
+    </script>
+</body>
+</html>
